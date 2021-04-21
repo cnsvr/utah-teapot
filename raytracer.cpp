@@ -8,6 +8,7 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+#include <stdio.h>
 
 using namespace std;
 
@@ -44,7 +45,7 @@ color ray_color(ray& r, const point3& light) {
         double tt;
         for (sphere s: allSpheres) {
             if (shadRay.intersect(s,tt)){
-                if (tt > 0.0) {
+                if (tt < 0.02) {
                     pointIsBlocked = true;
                 }
             }
@@ -57,34 +58,23 @@ color ray_color(ray& r, const point3& light) {
          */
 
         if (!pointIsBlocked) {
+
             vec3 normal = hitObject.getNormal(pi);
             vec3 l = light - pi;
-            double dt = dot(normal, l);
-            dt = dt < 0 ? 0 : dt;
+            double dt = dot(normalize(normal), normalize(l));
+            // dt = dt < 0 ? 0 : dt;
             if (dt > 0) return c;  // points are in light area.
-        }
+            else return c - (c * dt * -1);
 
-        return c * 0.1;
+        }
+        return { 0,0,0};
 
     }
-
-    // TODO : Self shadowing ???
-    /*
-    for (int i = 0; i < allSpheres.size(); ++i) {
-        vec3 origin = vec3(r.direction().x(),r.direction().y(), allSpheres[i].center.z());
-        ray rr(origin, light - origin);
-        double ttt;
-        if (rr.intersect(allSpheres[i],ttt)) {
-            return {0,0,0};
-        }
-    }
-     */
-
 
     // background color
     vec3 unit_direction = normalize(r.direction());
     auto a = 0.5*(unit_direction.y() + 1.0);
-    return ((1.0-a)*color(1, 1, 1) + a*color(0, 0, 0)) * 0.3;
+    return ((1.0-a)*color(255, 255, 255) + a*color(0, 0, 0)) * 0.3;
 }
 
 int main(int argc, char** argv){
@@ -95,6 +85,13 @@ int main(int argc, char** argv){
     }
 
     string inputFile = argv[1];
+    char imageFile[] = "scene.ppm";
+
+    ifstream image(imageFile);
+
+    if (image) {
+        remove(imageFile);
+    }
 
     parse(inputFile);
 
