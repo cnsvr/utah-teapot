@@ -1,14 +1,10 @@
-#include "vec3.h"
-#include "color.h"
-#include "ray.h"
-#include "sphere.h"
-#include "constant.h"
 #include <vector>
 #include <fstream>
 #include <iostream>
 #include <string>
 #include <sstream>
 #include <stdio.h>
+#include "constant.h"
 
 using namespace std;
 
@@ -16,7 +12,7 @@ vector<sphere> allSpheres;
 
 void parse(string inputFile);
 
-color ray_color(ray& r, const point3& light) {
+color shoot(ray& r, const point3& light) {
     double t;
     // What if two spheres intersect with ray at same point? -> Choose closest t value.
     bool hit = false;
@@ -40,14 +36,12 @@ color ray_color(ray& r, const point3& light) {
         allSpheres.erase(allSpheres.begin() + hitIndex);
         color c = hitObject.col();
         vec3 pi = r.at(closestT);   // intersection point and is it in shadow or is it blocked any objects ?
-        ray shadRay(pi, light - pi);    // a ray from intersection point to light point.
+        ray shadRay(pi, light-pi);    // a ray from intersection point to light point.
         bool pointIsBlocked = false;
         double tt;
         for (sphere s: allSpheres) {
             if (shadRay.intersect(s,tt)){
-                if (tt < 0.02) {
-                    pointIsBlocked = true;
-                }
+                pointIsBlocked = true;
             }
         }
         allSpheres.push_back(hitObject);
@@ -62,12 +56,13 @@ color ray_color(ray& r, const point3& light) {
             vec3 normal = hitObject.getNormal(pi);
             vec3 l = light - pi;
             double dt = dot(normalize(normal), normalize(l));
-            // dt = dt < 0 ? 0 : dt;
             if (dt > 0) return c;  // points are in light area.
-            else return c - (c * dt * -1);
+            // else return c - (c * dt * -1);
+            else return c * 0.1;    // points are in shadow.
 
         }
-        return { 0,0,0};
+        // shadow due to other objects.
+        return { 25,25,25};
 
     }
 
@@ -85,14 +80,6 @@ int main(int argc, char** argv){
     }
 
     string inputFile = argv[1];
-    char imageFile[] = "scene.ppm";
-
-    ifstream image(imageFile);
-
-    if (image) {
-        remove(imageFile);
-    }
-
     parse(inputFile);
 
     // Image
@@ -126,7 +113,7 @@ int main(int argc, char** argv){
             double u = double (j + 0.5) / (image_width);
             double v = double (i + 0.5) / (image_height);
             ray r(origin, upper_left_corner + u*horizontal - v*vertical - origin);
-            color pixel_color = ray_color(r, light);
+            color pixel_color = shoot(r, light);
             clamp255(pixel_color);
             write_color(std::cout, pixel_color);
         }
