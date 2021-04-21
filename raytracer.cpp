@@ -57,8 +57,8 @@ color shoot(ray& r, const point3& light) {
             vec3 l = light - pi;
             double dt = dot(normalize(normal), normalize(l));
             if (dt > 0) return c;  // points are in light area.
-            else return c - (c * dt * -1);
-            // else return c * 0.1;    // points are in shadow.
+            // else return c - (c * dt * -1);   // realistic values
+            else return c * 0.1;    // points are in shadow.
 
         }
         // shadow due to other objects.
