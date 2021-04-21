@@ -34,7 +34,7 @@ color shoot(ray& r, const point3& light) {
      */
     if (hit) {
         allSpheres.erase(allSpheres.begin() + hitIndex);
-        color c = hitObject.col();
+        color c = hitObject.color();
         vec3 pi = r.at(closestT);   // intersection point and is it in shadow or is it blocked any objects ?
         ray shadRay(pi, light-pi);    // a ray from intersection point to light point.
         bool pointIsBlocked = false;
@@ -57,8 +57,8 @@ color shoot(ray& r, const point3& light) {
             vec3 l = light - pi;
             double dt = dot(normalize(normal), normalize(l));
             if (dt > 0) return c;  // points are in light area.
-            // else return c - (c * dt * -1);
-            else return c * 0.1;    // points are in shadow.
+            else return c - (c * dt * -1);
+            // else return c * 0.1;    // points are in shadow.
 
         }
         // shadow due to other objects.
@@ -148,7 +148,7 @@ void parse(string inputFile){
         sphere newSphere = sphere(
                 point3(positions[0],positions[1],positions[2]),
                 stod(radiusLine),
-                vec3(colors[0],colors[1],colors[2]));
+                color(colors[0],colors[1],colors[2]));
         allSpheres.push_back(newSphere);
     }
 }

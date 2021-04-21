@@ -11,13 +11,13 @@ class sphere {
 public:
     point3 center;
     double radius;
-    vec3 color;
+    color col;
 public:
     sphere() {}
-    sphere(point3 c, double r, vec3 col) : center(c), radius(r), color(col) {}
+    sphere(point3 cen, double r, color c) : center(cen), radius(r), col(c) {}
     point3 c() const { return center; }
     double r() const { return radius; }
-    vec3 col() const { return color; }
+    vec3 color() const { return col; }
     vec3 getNormal(const vec3& pi) const { return (pi - center) / radius ; }
 };
 #endif //SPHERE_H
