@@ -5,20 +5,53 @@
 #ifndef COLOR_H
 #define COLOR_H
 
+#include <iostream>
 #include "vec3.h"
 
-#include <iostream>
+class color {
+private:
+    double red, green, blue;
+public:
+    color () {}
+    color (double r, double g, double b) : red(r), green(g), blue(b) {}
 
-void write_color(std::ostream &out, color pixel_color) {
-    out << static_cast<int>(pixel_color.x()) << ' '
-        << static_cast<int>(pixel_color.y()) << ' '
-        << static_cast<int>(pixel_color.z()) << '\n';
-}
+    double getColorRed() { return red; }
+    double getColorGreen() { return green; }
+    double getColorBlue() { return blue; }
 
-void clamp255(color& col) {
-    col.e[0] = (col.e[0] > 255) ? 255 : (col.e[0] < 0) ? 0 : col.e[0];
-    col.e[1] = (col.e[1] > 255) ? 255 : (col.e[1] < 0) ? 0 : col.e[1];
-    col.e[2] = (col.e[2] > 255) ? 255 : (col.e[2] < 0) ? 0 : col.e[2];
+    void setColorRed(double redValue) { red = redValue; }
+    void setColorGreen(double greenValue) { green = greenValue; }
+    void setColorBlue(double blueValue) { blue = blueValue; }
+
+    double brightness () { return (red + green + blue) / 3; }
+
+    color add(color c) { return color(red + c.red, green + c.green, blue + c.blue); }
+    color multiply(color c) { return color(red * c.red, green * c.green, blue * c.blue); }
+    color scalar(double s) { return color(red * s, green * s, blue * s); }
+    color average(color c) { return color(red * c.red / 2, green * c.green / 2, blue * c.blue / 2); }
+    color clamp() {
+        double allLight = red + green + blue;
+        double excessLight = allLight - 3;
+        if (excessLight > 0) {
+            red = red + excessLight * (red / allLight);
+            green = green + excessLight * (green / allLight);
+            blue = blue + excessLight * (blue / allLight);
+        }
+
+        if (red > 1) { red = 1; }
+        if (red < 0) { red = 0; }
+        if (blue > 1) { blue = 1; }
+        if (blue < 0) { blue = 0; }
+        if (green > 1) { green = 1; }
+        if (green < 0) { green = 0; }
+
+        return color(red, green, blue);
+
+    }
+};
+
+inline std::ostream& operator<<(std::ostream &out, color &c) {
+    return out << c.getColorRed() << ' ' << c.getColorGreen() << ' ' << c.getColorBlue();
 }
 
 #endif

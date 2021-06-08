@@ -9,6 +9,11 @@
 #include "color.h"
 #include "ray.h"
 #include "sphere.h"
+#include "plane.h"
+#include "object.h"
+#include "source.h"
+#include "light.h"
+#include "types.h"
 
 const double kInfinity = std::numeric_limits<double>::max();
 

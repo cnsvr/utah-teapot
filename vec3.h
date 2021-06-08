@@ -53,10 +53,6 @@ public:
     double e[3];
 };
 
-// Type aliases for vec3
-using point3 = vec3;   // 3D point
-using color = vec3;    // RGB color
-
 // vec3 Utility Functions
 
 inline std::ostream& operator<<(std::ostream &out, const vec3 &v) {
@@ -93,7 +89,7 @@ inline double dot(const vec3 &u, const vec3 &v) {
            + u.e[2] * v.e[2];
 }
 
-inline vec3 normalize(vec3 v) {
+inline vec3 unit_vector(vec3 v) {
     return v / v.length();
 }
 
