@@ -7,7 +7,8 @@
 
 enum objectType {
     PLANE,
-    SPHERE
+    SPHERE,
+    TRIANGLE
 };
 
 #endif //TYPES_H
