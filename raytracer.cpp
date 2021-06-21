@@ -192,7 +192,7 @@ color getColorAt(vec3 intersection_point, vec3 intersection_ray_direction, vecto
     object *hitObject = isectInfo.hitObject;
     color ambientColor = hitObject->getAmbientColor();
 
-    return ambientColor.scalar(std::max(0.0, dot(-hitNormal, intersection_ray_direction)));
+    return ambientColor; //.scalar(std::max(0.0, dot(-hitNormal, intersection_ray_direction)));
 
 }
 
@@ -285,7 +285,6 @@ int main(int argc, char** argv){
     for (int i = 0; i < objects.size(); ++i) {
         delete objects.at(i);
     }
-
 
     std::cerr << "\nDone.\n";
 

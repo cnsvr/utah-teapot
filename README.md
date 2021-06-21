@@ -1,1 +1,1 @@
-# raytracing hw
+# Utah Teapot
